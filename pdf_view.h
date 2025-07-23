@@ -10,7 +10,6 @@ typedef struct {
     int curr_page;
     PopplerPage *page;
     GtkWidget *drawingArea;
-    GtkWidget *entry;
     int width;  
     int height;
     double zoom_level; 

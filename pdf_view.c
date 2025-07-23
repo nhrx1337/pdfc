@@ -1,6 +1,7 @@
 #include "pdf_view.h"
+#include "controls.h"
 
-PdfViewerData pdf_viewer_data = {NULL, 0, NULL, NULL, NULL, 420, 595, 1.0};
+PdfViewerData pdf_viewer_data = {NULL, 0, NULL, NULL, 420, 595, 1.0};
 
 // Callback function to handle drawing the PDF page
 gboolean on_draw(GtkWidget *widget, cairo_t *cr) {
@@ -43,8 +44,8 @@ void load_page(int page_number) {
         gtk_widget_queue_draw(pdf_viewer_data.drawingArea);
     }
 
-    if (pdf_viewer_data.entry) {
-        gtk_entry_set_text(GTK_ENTRY(pdf_viewer_data.entry), g_strdup_printf("%d", pdf_viewer_data.curr_page));
+    if (controls.entry) {
+        gtk_entry_set_text(GTK_ENTRY(controls.entry), g_strdup_printf("%d", pdf_viewer_data.curr_page));
     }
 }
 
@@ -67,13 +68,20 @@ void previous_page(GtkWidget *widget, gpointer user_data) {
 // Function to initialize application data with the PDF file
 void initialize_app_data(const char *file_path) {
     GError *error = NULL;
-    pdf_viewer_data.document = poppler_document_new_from_file(file_path, NULL, &error);
+    GFile *gfile = g_file_new_for_path(file_path); // Create a GFile from the provided file path
+    char *uri = g_file_get_uri(gfile); // Get the URI of the file
+
+    // Load the PDF document from the specified URI
+    pdf_viewer_data.document = poppler_document_new_from_file(uri, NULL, &error);
+
     if (error) {
         g_printerr("Error opening PDF file: %s\n", error->message);
         g_error_free(error);
         return;
     }
-    load_page(pdf_viewer_data.curr_page);
+    // Activate the controls since the document is successfully loaded
+    update_control_sensitivity(TRUE);
+    load_page(pdf_viewer_data.curr_page = 0);
 }
 
 // Function to clean up application data
@@ -89,7 +97,9 @@ void cleanup_app_data() {
 // Function to update the size of the drawing area based on zoom level
 void update_drawing_area_size() {
     // Set the size request for the drawing area based on the current zoom level
-    gtk_widget_set_size_request(pdf_viewer_data.drawingArea, pdf_viewer_data.width * pdf_viewer_data.zoom_level, pdf_viewer_data.height * pdf_viewer_data.zoom_level);
+    gtk_widget_set_size_request(pdf_viewer_data.drawingArea,
+            pdf_viewer_data.width * pdf_viewer_data.zoom_level, 
+            pdf_viewer_data.height * pdf_viewer_data.zoom_level);
     gtk_widget_queue_draw(pdf_viewer_data.drawingArea);
 }
 

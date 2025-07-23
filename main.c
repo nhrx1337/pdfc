@@ -3,16 +3,8 @@
 #include "pdf_view.h"
 
 int main(int argc, char *argv[]) {
-    //g_setenv("GTK_THEME", "Adwaita:light", TRUE);
-
-    if (argc < 2) {
-        g_printerr("Usage: %s file:/path/your/pdf\n", argv[0]);
-        return 1;
-    }
-
     // Initialize the GTK application
     gtk_init(&argc, &argv);
-    initialize_app_data(argv[1]); // Initialize application data with the provided PDF file path
 
     // Create a new top-level window
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -29,7 +21,10 @@ int main(int argc, char *argv[]) {
     
     // Set up controls in the header bar (e.g., buttons, menus)
     setup_controls(header_bar);
+    setup_menu(header_bar);
 
+    update_control_sensitivity(FALSE); // Initially disable controls until a PDF is loaded
+                                   
      // Create vertical and horizontal adjustments for scrolling
     GtkAdjustment *vadjustment = gtk_adjustment_new(0, 0, pdf_viewer_data.height, 1, 10, 0);
     GtkAdjustment *hadjustment = gtk_adjustment_new(0, 0, pdf_viewer_data.width, 1, 10, 0);
@@ -41,7 +36,6 @@ int main(int argc, char *argv[]) {
 
     // Create a drawing area for rendering the PDF
     pdf_viewer_data.drawingArea = gtk_drawing_area_new();
-    g_signal_connect(pdf_viewer_data.drawingArea, "draw", G_CALLBACK(on_draw), NULL); // Connect the draw signal to the drawing function                              
     gtk_container_add(GTK_CONTAINER(scrolled_window), pdf_viewer_data.drawingArea);
     // Set the size request for the drawing area based on the PDF dimensions and zoom level
     gtk_widget_set_size_request(pdf_viewer_data.drawingArea,
@@ -53,6 +47,14 @@ int main(int argc, char *argv[]) {
     gtk_widget_set_hexpand(pdf_viewer_data.drawingArea, TRUE);
     gtk_widget_set_halign(pdf_viewer_data.drawingArea, GTK_ALIGN_CENTER);
 
+    // If a PDF file path is provided as a command-line argument, initialize the application data
+    if(argc > 1){
+        update_control_sensitivity(TRUE);
+        initialize_app_data(argv[1]); // Initialize application data with the provided PDF file path
+    }
+    // Connect the draw signal to the drawing function for rendering the PDF
+    g_signal_connect(pdf_viewer_data.drawingArea, "draw", G_CALLBACK(on_draw), NULL);  // Connect the draw signal to the drawing function 
+    
     // Connect the size-allocate signal to update the drawing area size when the window is resized
     g_signal_connect(pdf_viewer_data.drawingArea, "size-allocate", G_CALLBACK(update_drawing_area_size), NULL);
 
