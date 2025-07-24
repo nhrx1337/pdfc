@@ -23,6 +23,10 @@ cd pdfc/
 ```bash
 make
 ```
+**Or install the application:**
+```bash
+sudo make install
+```
 3. **Run the application:**
 ```bash
 ./pdfc <path/to/your/file.pdf>
@@ -30,5 +34,10 @@ make
 **or open directly:**
 ```bash
 ./pdfc
+```
+If you installed the application, you can run it directly from the terminal without the ./ prefix.
+## ❌ Uninstallation
+```bash
+sudo make uninstall
 ```
 
