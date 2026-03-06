@@ -1,4 +1,3 @@
-#include <gtk/gtk.h>
 #include "controls.h"
 #include "pdf_view.h"
 
@@ -25,12 +24,8 @@ int main(int argc, char *argv[]) {
 
     update_control_sensitivity(FALSE); // Initially disable controls until a PDF is loaded
                                    
-     // Create vertical and horizontal adjustments for scrolling
-    GtkAdjustment *vadjustment = gtk_adjustment_new(0, 0, pdf_viewer_data.height, 1, 10, 0);
-    GtkAdjustment *hadjustment = gtk_adjustment_new(0, 0, pdf_viewer_data.width, 1, 10, 0);
-
     // Create a scrolled window to allow scrolling of the PDF viewer
-    GtkWidget *scrolled_window = gtk_scrolled_window_new(hadjustment, vadjustment);
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_container_add(GTK_CONTAINER(window), scrolled_window);
 
@@ -39,8 +34,8 @@ int main(int argc, char *argv[]) {
     gtk_container_add(GTK_CONTAINER(scrolled_window), pdf_viewer_data.drawingArea);
     // Set the size request for the drawing area based on the PDF dimensions and zoom level
     gtk_widget_set_size_request(pdf_viewer_data.drawingArea,
-            pdf_viewer_data.width*pdf_viewer_data.zoom_level,
-            pdf_viewer_data.height*pdf_viewer_data.zoom_level);
+            pdf_viewer_data.width * pdf_viewer_data.zoom_level,
+            pdf_viewer_data.height * pdf_viewer_data.zoom_level);
 
     // Allow the drawing area to expand and center it in the scrolled window
     gtk_widget_set_vexpand(pdf_viewer_data.drawingArea, TRUE);

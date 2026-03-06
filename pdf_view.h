@@ -5,13 +5,15 @@
 #include <poppler/glib/poppler.h>
 #include <math.h>
 
+#include "controls.h"
+
 typedef struct {
     PopplerDocument *document;
     int curr_page;
     PopplerPage *page;
     GtkWidget *drawingArea;
-    int width;  
-    int height;
+    double width;  
+    double height;
     double zoom_level; 
 } PdfViewerData; 
 

@@ -1,5 +1,4 @@
 #include "pdf_view.h"
-#include "controls.h"
 
 PdfViewerData pdf_viewer_data = {NULL, 0, NULL, NULL, 420, 595, 1.0};
 
@@ -13,7 +12,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr) {
         poppler_page_get_size(pdf_viewer_data.page, &page_width, &page_height);
 
         // Calculate scale factor for width and height, Use the smaller scale to maintain aspect ratio
-        double scale = fmin(allocation.width / page_width, allocation.height / page_height);
+        double scale = fmin((double)allocation.width / page_width, (double)allocation.height / page_height);
 
         cairo_save(cr); // Save the current state of the Cairo context
         cairo_scale(cr, scale, scale);
@@ -35,17 +34,24 @@ void load_page(int page_number) {
     }
 
     pdf_viewer_data.page = poppler_document_get_page(pdf_viewer_data.document, page_number);
+    
+    // Update internal width/height with actual page size
+    poppler_page_get_size(pdf_viewer_data.page, 
+            &pdf_viewer_data.width, &pdf_viewer_data.height);
+
     if (!pdf_viewer_data.page) {
         g_printerr("Error: Could not load page %d.\n", page_number);
         return;
     }
 
     if (pdf_viewer_data.drawingArea) {
-        gtk_widget_queue_draw(pdf_viewer_data.drawingArea);
+        update_drawing_area_size();
     }
 
     if (controls.entry) {
-        gtk_entry_set_text(GTK_ENTRY(controls.entry), g_strdup_printf("%d", pdf_viewer_data.curr_page));
+        char *page_str = g_strdup_printf("%d", pdf_viewer_data.curr_page);
+        gtk_entry_set_text(GTK_ENTRY(controls.entry), page_str);
+        g_free(page_str);
     }
 }
 
@@ -71,8 +77,14 @@ void initialize_app_data(const char *file_path) {
     GFile *gfile = g_file_new_for_path(file_path); // Create a GFile from the provided file path
     char *uri = g_file_get_uri(gfile); // Get the URI of the file
 
+    cleanup_app_data();
+    
     // Load the PDF document from the specified URI
     pdf_viewer_data.document = poppler_document_new_from_file(uri, NULL, &error);
+
+    // Clean up
+    g_free(uri);
+    g_object_unref(gfile);
 
     if (error) {
         g_printerr("Error opening PDF file: %s\n", error->message);
@@ -88,9 +100,11 @@ void initialize_app_data(const char *file_path) {
 void cleanup_app_data() {
     if (pdf_viewer_data.page) {
         g_object_unref(pdf_viewer_data.page);
+        pdf_viewer_data.page = NULL;
     }
     if (pdf_viewer_data.document) {
         g_object_unref(pdf_viewer_data.document);
+        pdf_viewer_data.document = NULL;
     }
 }
 

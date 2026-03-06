@@ -3,6 +3,8 @@
 
 #include <gtk/gtk.h>
 
+#include "pdf_view.h"
+
 typedef struct {
     GtkWidget *previous_button;
     GtkWidget *next_button;
@@ -24,4 +26,3 @@ void update_control_sensitivity(gboolean condition);
 
 
 #endif // CONTROLS_H
-

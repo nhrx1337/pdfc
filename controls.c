@@ -1,6 +1,4 @@
-#include <gtk/gtk.h>
 #include "controls.h"
-#include "pdf_view.h"
 
 Controls controls = {NULL, NULL, NULL, NULL, NULL};
 
@@ -22,19 +20,11 @@ void entry_activated(GtkWidget *entry, gpointer data) {
     long value = strtol(text, &endptr, 10); // Convert the text to a long integer
     int last_page = poppler_document_get_n_pages(pdf_viewer_data.document) - 1; // Get the last page index
 
-    // Check if the input is a valid number and within the range
-    if (*endptr == '\0' && endptr != text) {
-        if (value >= 0 && value <= last_page) {
-            // Valid page number, load the specified page
-            load_page(pdf_viewer_data.curr_page = value);
-        } else {
-            // Out of range, reset the entry to the current page number
-            gtk_entry_set_text(GTK_ENTRY(entry), g_strdup_printf("%d", pdf_viewer_data.curr_page));
-        }
-    } else {
-        // Invalid input, reset the entry to the current page number
-        gtk_entry_set_text(GTK_ENTRY(entry), g_strdup_printf("%d", pdf_viewer_data.curr_page));
+    if (*endptr == '\0' && endptr != text && value >= 0 && value <= last_page) {
+        pdf_viewer_data.curr_page = (int)value;
     }
+
+    load_page(pdf_viewer_data.curr_page);
 }
 
 // Function to open a file chooser dialog for selecting a PDF file
@@ -168,7 +158,6 @@ void setup_menu(GtkWidget *header_bar) {
 
     // Associate the menu with the menu button
     gtk_menu_button_set_popup(GTK_MENU_BUTTON(menu_button), GTK_WIDGET(menu));
-
 }
 
 // Function to enable or disable the control buttons and entry field
