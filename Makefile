@@ -5,10 +5,10 @@ CC = gcc
 CFLAGS = -Wall -g -lm `pkg-config --cflags gtk+-3.0 poppler-glib`
 
 # Source files
-SRCS = main.c controls.c pdf_view.c
+SRCS = main.c controls.c pdf_view.c pdf_events.c
 
 # Header files
-HEADERS = controls.h pdf_view.h
+HEADERS = controls.h pdf_view.h pdf_events.h
 
 # Target executable
 TARGET = pdfc

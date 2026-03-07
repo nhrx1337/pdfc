@@ -14,8 +14,13 @@ typedef struct {
     GtkWidget *drawingArea;
     double width;  
     double height;
-    double zoom_level; 
-} PdfViewerData; 
+    double zoom_level;
+
+    // Mouse interaction state:
+    double last_x;
+    double last_y;
+    gboolean is_dragging;
+} PdfViewerData;
 
 extern PdfViewerData pdf_viewer_data;
 
@@ -28,4 +33,3 @@ void cleanup_app_data();
 void update_drawing_area_size();
 
 #endif // PDF_VIEW_H
-

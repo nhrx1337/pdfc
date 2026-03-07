@@ -3,12 +3,12 @@
 Controls controls = {NULL, NULL, NULL, NULL, NULL};
 
 void on_zoom_in_button_clicked(GtkWidget *widget, gpointer user_data) {
-    pdf_viewer_data.zoom_level *= 1.2; // Increase zoom level by 20%
+    pdf_viewer_data.zoom_level *= 1.1; // Increase zoom level by 10%
     update_drawing_area_size(); // Update the drawing area size based on the new zoom level
 }
 
 void on_zoom_out_button_clicked(GtkWidget *widget, gpointer user_data) {
-    pdf_viewer_data.zoom_level /= 1.2; // Decrease zoom level by 20%
+    pdf_viewer_data.zoom_level /= 1.1; // Decrease zoom level by 10%
     update_drawing_area_size(); 
 }
 
@@ -17,8 +17,10 @@ void entry_activated(GtkWidget *entry, gpointer data) {
     const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry)); // Get the text from the entry field
 
     char *endptr;
-    long value = strtol(text, &endptr, 10); // Convert the text to a long integer
-    int last_page = poppler_document_get_n_pages(pdf_viewer_data.document) - 1; // Get the last page index
+    // Convert the text to a long integer
+    long value = strtol(text, &endptr, 10); 
+    // Get the last page index
+    int last_page = poppler_document_get_n_pages(pdf_viewer_data.document) - 1;
 
     if (*endptr == '\0' && endptr != text && value >= 0 && value <= last_page) {
         pdf_viewer_data.curr_page = (int)value;
@@ -59,7 +61,8 @@ void open_file_chooser(GtkWidget *widget, gpointer user_data) {
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
         if (filename) {
             //g_print("Selected file: %s\n", filename);
-            initialize_app_data(filename); // Initialize application data with the selected file
+            // Initialize application data with the selected file
+            initialize_app_data(filename); 
             g_free(filename);
         } else {
             g_printerr("No file was selected.\n");
@@ -79,7 +82,6 @@ void set_theme(GtkWidget *widget, gpointer user_data) {
         g_object_set(settings, "gtk-theme-name", "Adwaita", NULL);
     }
 }
-
 
 // Function to set up controls in the header bar
 void setup_controls(GtkWidget *header_bar) {

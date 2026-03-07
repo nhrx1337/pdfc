@@ -74,8 +74,10 @@ void previous_page(GtkWidget *widget, gpointer user_data) {
 // Function to initialize application data with the PDF file
 void initialize_app_data(const char *file_path) {
     GError *error = NULL;
-    GFile *gfile = g_file_new_for_path(file_path); // Create a GFile from the provided file path
-    char *uri = g_file_get_uri(gfile); // Get the URI of the file
+    // Create a GFile from the provided file path
+    GFile *gfile = g_file_new_for_path(file_path);
+    // Get the URI of the file
+    char *uri = g_file_get_uri(gfile); 
 
     cleanup_app_data();
     
@@ -116,4 +118,3 @@ void update_drawing_area_size() {
             pdf_viewer_data.height * pdf_viewer_data.zoom_level);
     gtk_widget_queue_draw(pdf_viewer_data.drawingArea);
 }
-
