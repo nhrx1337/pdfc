@@ -6,18 +6,30 @@ PdfViewerData pdf_viewer_data = {NULL, 0, NULL, NULL, 420, 595, 1.0};
 gboolean on_draw(GtkWidget *widget, cairo_t *cr) {
     if (pdf_viewer_data.page) {
         GtkAllocation allocation;
-        gtk_widget_get_allocation(widget, &allocation); // Get the allocation of the widget (size)
+        // Get the allocation of the widget (size)
+        gtk_widget_get_allocation(widget, &allocation); 
 
         double page_width, page_height;
         poppler_page_get_size(pdf_viewer_data.page, &page_width, &page_height);
 
         // Calculate scale factor for width and height, Use the smaller scale to maintain aspect ratio
         double scale = fmin((double)allocation.width / page_width, (double)allocation.height / page_height);
-
-        cairo_save(cr); // Save the current state of the Cairo context
+        
+        // Save the current state of the Cairo context
+        cairo_save(cr);
         cairo_scale(cr, scale, scale);
-        poppler_page_render(pdf_viewer_data.page, cr); // Render the PDF page onto the Cairo context
-        cairo_restore(cr); // Restore the previous state of the Cairo context
+
+        // Fill the page area with white
+        cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+        cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+        cairo_rectangle(cr, 0, 0, page_width, page_height);
+        cairo_fill(cr);
+
+        // Render the PDF page content over the white background
+        cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+        poppler_page_render(pdf_viewer_data.page, cr);
+        // Restore the previous state of the Cairo context
+        cairo_restore(cr); 
     }
     return FALSE; // Return FALSE to indicate that the default handler should be called
 }
