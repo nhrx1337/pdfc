@@ -80,6 +80,24 @@ gboolean on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer data) {
         }
         is_fullscreen = !is_fullscreen;
         return TRUE;
+    } else if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down) {
+        GtkWidget *scrolled_window = gtk_widget_get_ancestor(pdf_viewer_data.drawingArea, GTK_TYPE_SCROLLED_WINDOW);
+        
+        if (scrolled_window) {
+            GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+            double current_pos = gtk_adjustment_get_value(vadj);
+            double step = gtk_adjustment_get_step_increment(vadj) * 2; // Scroll speed
+
+            if (event->keyval == GDK_KEY_Up) {
+                gtk_adjustment_set_value(vadj, current_pos - step);
+            } else {
+                gtk_adjustment_set_value(vadj, current_pos + step);
+            }
+            return TRUE;
+        }
+    } else if (event->keyval == GDK_KEY_f || event->keyval == GDK_KEY_F) {
+        fit_to_height();
+        return TRUE;
     }
     return FALSE; // Propagate other keys
 }

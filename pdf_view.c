@@ -83,6 +83,28 @@ void previous_page(GtkWidget *widget, gpointer user_data) {
     }
 }
 
+// Function to adjust zoom level to fit the page height to the window
+void fit_to_height() {
+    if (!pdf_viewer_data.page) return;
+
+    GtkAllocation allocation;
+    GtkWidget *scrolled = gtk_widget_get_ancestor(pdf_viewer_data.drawingArea, GTK_TYPE_SCROLLED_WINDOW);
+    
+    // Get the allocation of the scrolled window content area
+    gtk_widget_get_allocation(scrolled, &allocation);
+
+    double page_width, page_height;
+    poppler_page_get_size(pdf_viewer_data.page, &page_width, &page_height);
+
+    pdf_viewer_data.zoom_level = (double)allocation.height / page_height;
+
+    // Force drawing area to update
+    update_drawing_area_size();
+
+    GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled));
+    gtk_adjustment_set_value(vadj, 0);
+}
+
 // Function to initialize application data with the PDF file
 void initialize_app_data(const char *file_path) {
     GError *error = NULL;

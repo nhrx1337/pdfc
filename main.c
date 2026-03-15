@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
     // Create a scrolled window to allow scrolling of the PDF viewer
     GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 0);
     gtk_box_pack_start(GTK_BOX(main_box), scrolled_window, TRUE, TRUE, 0);
 
     // Create a drawing area for rendering the PDF
@@ -69,7 +70,7 @@ int main(int argc, char *argv[]) {
 
     // Connect the draw signal to the drawing function for rendering the PDF
     g_signal_connect(pdf_viewer_data.drawingArea, "draw", G_CALLBACK(on_draw), NULL);
-    
+
     gtk_widget_show_all(window);
     gtk_main();
 

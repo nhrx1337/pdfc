@@ -27,6 +27,7 @@ extern PdfViewerData pdf_viewer_data;
 gboolean on_draw(GtkWidget *widget, cairo_t *cr);
 void load_page(int page_number);
 void next_page(GtkWidget *widget, gpointer user_data);
+void fit_to_height();
 void previous_page(GtkWidget *widget, gpointer user_data);
 void initialize_app_data(const char *file_path);
 void cleanup_app_data();
