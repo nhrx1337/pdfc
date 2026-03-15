@@ -119,11 +119,11 @@ void setup_controls(GtkWidget *header_bar) {
     gtk_widget_set_size_request(controls.zoom_out_button, 25, 25);
 
     // Create a button for fitting page to height
-    GtkWidget *fit_button = gtk_button_new();
+    controls.fit_button = gtk_button_new();
     GtkWidget *fit_image = gtk_image_new_from_icon_name("zoom-fit-best", GTK_ICON_SIZE_BUTTON);
-    gtk_button_set_image(GTK_BUTTON(fit_button), fit_image);
-    g_signal_connect(fit_button, "clicked", G_CALLBACK(fit_to_height), NULL);
-    gtk_widget_set_size_request(fit_button, 25, 25);
+    gtk_button_set_image(GTK_BUTTON(controls.fit_button), fit_image);
+    g_signal_connect(controls.fit_button, "clicked", G_CALLBACK(fit_to_height), NULL);
+    gtk_widget_set_size_request(controls.fit_button, 25, 25);
 
     // Pack all the created widgets into the header bar
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), controls.previous_button);
@@ -131,7 +131,7 @@ void setup_controls(GtkWidget *header_bar) {
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), controls.entry);
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), controls.zoom_in_button);
     gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), controls.zoom_out_button);
-    gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), fit_button);
+    gtk_header_bar_pack_start(GTK_HEADER_BAR(header_bar), controls.fit_button);
 }
 
 // Function to set up the menu in the header bar
@@ -177,4 +177,5 @@ void update_control_sensitivity(gboolean condition) {
     gtk_widget_set_sensitive(controls.entry, condition);
     gtk_widget_set_sensitive(controls.zoom_in_button, condition);
     gtk_widget_set_sensitive(controls.zoom_out_button, condition);
+    gtk_widget_set_sensitive(controls.fit_button, condition);
 }

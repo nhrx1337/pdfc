@@ -11,6 +11,7 @@ typedef struct {
     GtkWidget *entry;
     GtkWidget *zoom_in_button;
     GtkWidget *zoom_out_button;
+    GtkWidget *fit_button;
 } Controls;
 
 extern Controls controls;
